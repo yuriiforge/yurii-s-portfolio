@@ -1,0 +1,255 @@
+@import 'tailwindcss';
+
+/* Enable the `dark:` variant off a class on <html> rather than the media query,
+   so the theme toggle can override the OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens — LIGHT (default) ─────────────────────────────────────
+   Change --accent (+ --accent-dim / --accent-glow) to re-skin the whole site. */
+:root {
+  --bg: #ffffff;
+  --bg-secondary: #f4f7f5;
+  --bg-card: #ffffff;
+  --border: #e2e9e4;
+  --border-hover: #c8d8cc;
+
+  --accent: #16a34a;
+  --accent-dim: #15803d;
+  --accent-glow: rgba(22, 163, 74, 0.1);
+
+  --text-primary: #0b0f0c;
+  --text-secondary: #4a5e52;
+  --text-muted: #6a7878;
+
+  --avatar-from: #e2f0e4;
+  --avatar-to: #f4f7f5;
+
+  --orb-opacity: 0.16;
+  --overlay: rgba(11, 15, 12, 0.4);
+
+  --sidebar-width: 280px;
+
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  color-scheme: light;
+}
+
+/* ── Design tokens — DARK ────────────────────────────────────────────────── */
+.dark {
+  --bg: #080e09;
+  --bg-secondary: #0b0f0c;
+  --bg-card: #0f1e14;
+  --border: #1a4028;
+  --border-hover: #245530;
+
+  --accent: #4ade80;
+  --accent-dim: #22c55e;
+  --accent-glow: rgba(74, 222, 128, 0.14);
+
+  --text-primary: #f4f7f5;
+  --text-secondary: #9aacac;
+  --text-muted: #607070;
+
+  --avatar-from: #1a4028;
+  --avatar-to: #0b0f0c;
+
+  --orb-opacity: 0.22;
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  color-scheme: dark;
+}
+
+/* Expose tokens to Tailwind utilities (text-accent, bg-card, border-line, …) */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-card: var(--bg-card);
+  --color-line: var(--border);
+  --color-line-hover: var(--border-hover);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* offset anchors so the sticky mobile header never covers a heading */
+  scroll-padding-top: 5rem;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hover) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-dim);
+}
+
+/* ── Ambient background orbs ───────────────────────────────────────────── */
+.bg-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  opacity: var(--orb-opacity);
+  will-change: transform;
+}
+.bg-orb-1 {
+  width: 520px;
+  height: 520px;
+  top: -140px;
+  left: 12%;
+  background: radial-gradient(circle, #16a34a 0%, transparent 70%);
+  animation: orb-drift-1 24s ease-in-out infinite;
+}
+.bg-orb-2 {
+  width: 420px;
+  height: 420px;
+  top: 45%;
+  right: -120px;
+  background: radial-gradient(circle, #4ade80 0%, transparent 70%);
+  animation: orb-drift-2 30s ease-in-out infinite;
+}
+.bg-orb-3 {
+  width: 460px;
+  height: 460px;
+  bottom: -160px;
+  left: 40%;
+  background: radial-gradient(circle, #76a87c 0%, transparent 70%);
+  animation: orb-drift-3 27s ease-in-out infinite;
+}
+
+@keyframes orb-drift-1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(60px, 80px) scale(1.12);
+  }
+}
+@keyframes orb-drift-2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-80px, -60px) scale(1.18);
+  }
+}
+@keyframes orb-drift-3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, -70px) scale(1.1);
+  }
+}
+
+/* ── Rotating gradient border (profile photo) ──────────────────────────── */
+.animated-border {
+  position: relative;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    var(--accent),
+    #76a87c,
+    #22c55e,
+    var(--accent)
+  );
+  animation: border-spin 6s linear infinite;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* ── Utilities ─────────────────────────────────────────────────────────── */
+.card-hover {
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -14px rgba(11, 31, 18, 0.28);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .bg-orb,
+  .animated-border {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
