@@ -5,9 +5,31 @@ import { Github } from '../BrandIcons'
 import Section from '../Section'
 import { projects } from '../../data/content'
 
+/** yookilabs.com — the bare domain reads better on the chip than "live demo". */
+function siteName(url) {
+  return new URL(url).hostname.replace(/^www\./, '')
+}
+
+/** Chip-sized link that sits in the card header next to the title. */
+function HeaderLink({ href, icon: Icon, label }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="focus-ring pointer-events-auto relative z-10 flex items-center gap-1 rounded-md border border-line px-1.5 py-0.5 font-mono text-[10px] text-secondary transition-colors hover:border-accent hover:text-accent"
+    >
+      <Icon size={9} />
+      {label}
+    </a>
+  )
+}
+
 function ProjectCard({ project }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
+  const showLinks =
+    !project.nda && (project.links.live || project.links.github)
 
   return (
     <div
@@ -15,62 +37,90 @@ function ProjectCard({ project }) {
         open ? 'border-line-hover' : 'border-line'
       }`}
     >
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        className="focus-ring flex w-full items-start gap-4 p-5 text-left"
-      >
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-            <h3 className="font-bold text-primary">{project.title}</h3>
+      {/* The toggle is an overlay rather than a wrapper: the header holds real
+          links, and an <a> can't live inside a <button>. The content layer
+          ignores pointer events so clicks fall through to the toggle, and each
+          link opts back in on top of it. */}
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="focus-ring absolute inset-0 h-full w-full rounded-xl"
+        >
+          <span className="sr-only">
+            {open ? 'Hide' : 'Show'} details for {project.title}
+          </span>
+        </button>
 
-            {project.featured && (
-              <span className="flex items-center gap-1 rounded-md bg-(--accent-glow) px-1.5 py-0.5 font-mono text-[10px] text-accent">
-                <Star size={9} className="fill-current" />
-                featured
-              </span>
-            )}
+        <div className="pointer-events-none flex items-start gap-4 p-5 text-left">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              <h3 className="font-bold text-primary">{project.title}</h3>
 
-            {project.nda && (
-              <span className="flex items-center gap-1 rounded-md border border-line px-1.5 py-0.5 font-mono text-[10px] text-muted">
-                <Lock size={9} />
-                NDA
-              </span>
-            )}
+              {project.featured && (
+                <span className="flex items-center gap-1 rounded-md bg-(--accent-glow) px-1.5 py-0.5 font-mono text-[10px] text-accent">
+                  <Star size={9} className="fill-current" />
+                  featured
+                </span>
+              )}
+
+              {project.nda && (
+                <span className="flex items-center gap-1 rounded-md border border-line px-1.5 py-0.5 font-mono text-[10px] text-muted">
+                  <Lock size={9} />
+                  NDA
+                </span>
+              )}
+
+              {showLinks && project.links.live && (
+                <HeaderLink
+                  href={project.links.live}
+                  icon={ExternalLink}
+                  label={siteName(project.links.live)}
+                />
+              )}
+
+              {showLinks && project.links.github && (
+                <HeaderLink
+                  href={project.links.github}
+                  icon={Github}
+                  label="source"
+                />
+              )}
+            </div>
+
+            <p className="mt-0.5 font-mono text-xs text-accent">
+              {project.subtitle}
+              {project.period && (
+                <span className="text-muted"> · {project.period}</span>
+              )}
+            </p>
+
+            <p className="mt-2.5 text-sm leading-relaxed text-secondary">
+              {project.summary}
+            </p>
+
+            <div className="mt-3.5 flex flex-wrap gap-1.5">
+              {project.stack.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-secondary"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <p className="mt-0.5 font-mono text-xs text-accent">
-            {project.subtitle}
-            {project.period && (
-              <span className="text-muted"> · {project.period}</span>
-            )}
-          </p>
-
-          <p className="mt-2.5 text-sm leading-relaxed text-secondary">
-            {project.summary}
-          </p>
-
-          <div className="mt-3.5 flex flex-wrap gap-1.5">
-            {project.stack.map((t) => (
-              <span
-                key={t}
-                className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-secondary"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
+          <ChevronDown
+            size={18}
+            className={`mt-1 shrink-0 text-muted transition-transform duration-300 ${
+              open ? 'rotate-180 text-accent' : ''
+            }`}
+          />
         </div>
-
-        <ChevronDown
-          size={18}
-          className={`mt-1 shrink-0 text-muted transition-transform duration-300 ${
-            open ? 'rotate-180 text-accent' : ''
-          }`}
-        />
-      </button>
+      </div>
 
       <AnimatePresence initial={false}>
         {open && (
@@ -96,33 +146,6 @@ function ProjectCard({ project }) {
                   </p>
                 ))}
               </div>
-
-              {!project.nda && (project.links.live || project.links.github) && (
-                <div className="mt-5 flex flex-wrap gap-2.5">
-                  {project.links.live && (
-                    <a
-                      href={project.links.live}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="focus-ring flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 font-mono text-xs text-secondary transition-colors hover:border-accent hover:text-accent"
-                    >
-                      <ExternalLink size={13} />
-                      live demo
-                    </a>
-                  )}
-                  {project.links.github && (
-                    <a
-                      href={project.links.github}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="focus-ring flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 font-mono text-xs text-secondary transition-colors hover:border-accent hover:text-accent"
-                    >
-                      <Github size={13} />
-                      source
-                    </a>
-                  )}
-                </div>
-              )}
 
               {project.nda && (
                 <p className="mt-5 font-mono text-xs text-muted">
