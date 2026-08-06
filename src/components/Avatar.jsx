@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { profile } from '../data/content'
 
 /** Profile photo inside the rotating gradient border.
+ *  /public/profile.JPG is already square (a portrait headshot padded out with
+ *  a blurred copy of its own backdrop), so `object-cover` fills the frame
+ *  without cropping anything off the subject. Swapping in a non-square photo
+ *  will crop again — pad it to 1:1 first.
  *  Falls back to initials if the image is missing, so the site never
  *  renders a broken-image box before you drop in /public/profile.jpg. */
 export default function Avatar({ size = 'size-56' }) {

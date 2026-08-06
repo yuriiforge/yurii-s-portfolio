@@ -58,7 +58,7 @@ export const about = {
  */
 export const projects = [
   {
-    title: 'Pascal Academy',
+    title: 'Yooki Labs',
     subtitle: 'AI-Powered EdTech SaaS',
     period: null,
     summary:
