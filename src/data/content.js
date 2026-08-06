@@ -152,8 +152,10 @@ export const projects = [
       'AWS S3',
       'Docker',
     ],
-    links: { live: null, github: null },
-    nda: true,
+    // Linking the portal root rather than the /login?redirect= URL — it lands
+    // on the same login screen without carrying a stale redirect param.
+    links: { live: 'https://yde-portal.vercel.app/', github: null },
+    nda: false,
     featured: false,
   },
   {

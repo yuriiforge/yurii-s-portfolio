@@ -28,8 +28,9 @@ function HeaderLink({ href, icon: Icon, label }) {
 function ProjectCard({ project }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
-  const showLinks =
-    !project.nda && (project.links.live || project.links.github)
+  // An NDA project can still have a public URL — the flag hides what wasn't
+  // given, it doesn't override a link that was.
+  const showLinks = Boolean(project.links.live || project.links.github)
 
   return (
     <div
@@ -147,10 +148,17 @@ function ProjectCard({ project }) {
                 ))}
               </div>
 
-              {project.nda && (
+              {project.nda && !showLinks && (
                 <p className="mt-5 font-mono text-xs text-muted">
                   Source and live links withheld under NDA — happy to walk
                   through the work in a call.
+                </p>
+              )}
+
+              {project.nda && showLinks && (
+                <p className="mt-5 font-mono text-xs text-muted">
+                  Source withheld under NDA — happy to walk through the work in
+                  a call.
                 </p>
               )}
             </div>
