@@ -50,6 +50,16 @@ export const about = {
 };
 
 /**
+ * Short intro video, shown as a card under the About stats.
+ * Set to null to hide it. `youtubeId` is the `v=` part of the watch URL.
+ */
+export const video = {
+  youtubeId: 'gH4-DoxNnv0',
+  title: 'Video introduction',
+  caption: 'A short intro — who I am and what I build.',
+};
+
+/**
  * Project cards expand on click.
  *  - `summary`  → always visible, keep it to one line
  *  - `details`  → array of bullet points, revealed on expand

@@ -2,6 +2,7 @@ import { MapPin, Circle } from 'lucide-react'
 import Section from '../Section'
 import Avatar from '../Avatar'
 import SocialLinks from '../SocialLinks'
+import VideoIntro from '../VideoIntro'
 import { about, profile } from '../../data/content'
 
 export default function About() {
@@ -71,6 +72,8 @@ export default function About() {
           )
         })}
       </div>
+
+      <VideoIntro className="mt-4 sm:mt-5" />
     </Section>
   )
 }
